@@ -10,16 +10,23 @@
 
 module.exports = (robot) ->
 
-  # robot.hear /badger/i, (res) ->
-  #   res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
-  #
-  # robot.respond /open the (.*) doors/i, (res) ->
-  #   doorType = res.match[1]
-  #   if doorType is "pod bay"
-  #     res.reply "I'm afraid I can't let you do that."
-  #   else
-  #     res.reply "Opening #{doorType} doors"
-  #
+  robot.hear /เป็นไงมั่ง/i, (res) ->
+   res.send "ร้อน ร้อน ร้อน!"
+
+  robot.respond /open the (.*) doors/i, (res) ->
+    doorType = res.match[1]
+    if doorType is "pod bay"
+      res.reply "I'm afraid I can't let you do that."
+    else
+      res.reply "Opening #{doorType} doors"
+
+  robot.hear /^hubot:? (.+)/i, (res) ->
+    response = "Sorry, I'm a diva and only respond to #{robot.name}"
+    response += " or #{robot.alias}" if robot.alias
+    res.reply response
+    return
+
+
   # robot.hear /I like pie/i, (res) ->
   #   res.emote "makes a freshly baked pie"
   #
