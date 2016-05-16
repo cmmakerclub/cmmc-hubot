@@ -27,6 +27,7 @@ module.exports = (robot) ->
     #console.log "ID = ", json_msg.info.id
     data = robot.brain.get("data") or {}
     data[json_msg.info.id] = json_msg
+    #data[json_msg.d.myName] = json_msg
     robot.brain.set "data", data
 
   #log robot.brain.get "data"
@@ -52,22 +53,13 @@ module.exports = (robot) ->
 
     res.reply str
 
-  robot.hear /^hubot:? (.+)/i, (res) ->
-    log(res.match);
-    response = "Sorry, I'm a diva and only respond to #{robot.name}"
-    response += " or #{robot.alias}" if robot.alias
-    response += "["
-    response += res.match.join("/")
-    response += "]"
-    res.reply response
-    return
-
   robot.hear /^\?device (\d*)$/i, (res) ->
+    console.log 57
     console.log res.match
     id = res.match[1]
     devices = robot.brain.get "data"
     device = devices[id]
-    res.reply JSON.stringify device, null, 4
+    res.reply JSON.stringify device
 
   robot.hear /^\?device (\d*) (.+)*$/i, (res) ->
     console.log res.match
@@ -75,26 +67,23 @@ module.exports = (robot) ->
     devices = robot.brain.get "data"
     device = devices[id]
 
-    if res.match[2]
-      exploded = res.match[2].split "."
-      console.log "exploded = ", exploded
+    exploded = res.match[2].split "."
+    console.log "exploded = ", exploded
 
-      subscript = ""
-      _.each exploded, (v, k) ->
-        subscript += "['#{v}']"
-      estr = "out = device#{subscript}"
-      console.log estr
+    subscript = ""
+    _.each exploded, (v, k) ->
+      subscript += "['#{v}']"
+    estr = "out = device#{subscript}"
+    console.log estr
 
-      try
-        eval estr
-      catch e
-        console.log "eval error", e
-        res.reply e.toString()
-        return
-    else
-      out = device
+    try
+      eval estr
+    catch e
+      console.log "eval error", e
+      res.reply e.toString()
+      return
 
-    res.reply JSON.stringify out, null, 4
+    res.reply "#{res.match[2]} = #{JSON.stringify out, null, 4}"
 
   robot.hear /^([-+])?(\d*)$/i, (res) ->
     user_name = "@" + res.message.user.name or ""
